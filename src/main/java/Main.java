@@ -1,5 +1,6 @@
 package main.java;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
@@ -28,7 +29,11 @@ public class Main {
         ///newuser?username=<username>&password=<pass>
         // AND /newuser?username=<anotheruser>&password=<pass>
         get("/newuser", (req, res) -> {
-            return req.queryMap().get("username").value() + req.queryMap().get("password").value();
+            BasicDBObject newuser = new BasicDBObject();
+            newuser.put("username", req.queryMap().get("username").value());
+            newuser.put("password", req.queryMap().get("password").value());
+            colusers.insert(newuser);
+            return colusers.getCount();
         });
 
         ///login?username=<username>&password=<wrongpassword>
