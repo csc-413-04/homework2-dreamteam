@@ -1,10 +1,24 @@
 package main.java;
 
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.MongoClient;
+
 import static spark.Spark.*;
 
 public class Main {
 
     public static void main(String[] args) {
+
+        //This creates the connection to the MangoDB database.
+        MongoClient mongo = new MongoClient("localhost", 27017);
+        DB db = mongo.getDB("REST2");
+
+        //This makes a collection accessible
+
+        DBCollection colusers = db.getCollection("users");
+        DBCollection colauth = db.getCollection("auth");
+
         // staticFiles.externalLocation("public");
         // http://sparkjava.com/documentation
         port(1234);
