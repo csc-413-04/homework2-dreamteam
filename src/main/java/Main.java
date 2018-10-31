@@ -61,9 +61,17 @@ public class Main {
             BasicDBObject checkToken = new BasicDBObject();
             checkToken.put("token", req.queryMap().get("token").value());
 
-            DBCursor cursor = colusers.find(checkToken);
+            DBCursor cursor = colauth.find(checkToken);
             if (cursor.hasNext()) {
-                //add friend
+
+                BasicDBObject newDocument = new BasicDBObject();
+                newDocument.append("$set", new BasicDBObject().append("friends", 110));
+                //code for getting username from token
+                BasicDBObject searchQuery = new BasicDBObject().append("username", "someuser"); //needs username value from colauth
+
+                colusers.update(searchQuery, newDocument);
+
+
                 return "okay";
             } else {
                 return "login_failed";
