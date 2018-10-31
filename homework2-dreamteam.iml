@@ -7,7 +7,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="org.mongodb:mongo-java-driver:3.8.2" level="project" />
-    <orderEntry type="library" name="com.sparkjava:spark-core:2.7.2" level="project" />
+    <orderEntry type="library" exported="" name="org.mongodb:mongo-java-driver:3.8.2" level="project" />
+    <orderEntry type="library" exported="" name="com.sparkjava:spark-core:2.7.2" level="project" />
   </component>
 </module>

@@ -44,11 +44,13 @@ public class Main {
 
             DBCursor cursor = colusers.find(userlogin);
             if (cursor.hasNext()) {
+                String jonothansToken = "";
                 BasicDBObject myToken = new BasicDBObject();
-                myToken.put("Token", "jonothan's token");
+                myToken.put("Token", jonothansToken);
                 myToken.put("Timestamp", System.currentTimeMillis());
-                myToken.put("username", req.queryMap().get("username").value());
-                return "login_accepted";    //needs to return token
+                //myToken.put("username", req.queryMap().get("username").value());
+                colauth.insert(myToken);
+                return jonothansToken;    //needs to return token
             } else {
                 return "login_failed";
             }
@@ -57,9 +59,16 @@ public class Main {
 
         // /addfriend?token=<badtoken>&friend=<freindsuserid>
         get("/addfriend", (req, res) -> {
-            //req.queryMap().get("token").value();
-            //req.queryMap().get("friend").value();
+            BasicDBObject checkToken = new BasicDBObject();
+            checkToken.put("username", req.queryMap().get("token").value());
 
+            DBCursor cursor = colusers.find(checkToken);
+            if (cursor.hasNext()) {
+                //add friend
+                return "okay";
+            } else {
+                return "login_failed";
+            }
 //            BasicDBObject newFriend = new BasicDBObject();
 //            newFriend.put("username", req.queryMap().get("friend").value());
 //
@@ -67,7 +76,6 @@ public class Main {
 //            DBObject updateQuery = new BasicDBObject("$push", listItem);
 //            colusers.insert(updateQuery);
 
-            return "failed_authentication";
         });
 
         // /friends?token=<token>
