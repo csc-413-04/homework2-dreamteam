@@ -40,13 +40,16 @@ public class Main {
             //req.queryMap().get("password").value();
             //build basicdbobject with username/password, look up in colusers, if match return login OK, if not login_failed
             //colusers.find(); maybe
-            DBObject userlogin = colusers.findOne();
-            if (userlogin.get("username") == req.queryMap().get("username").value() &&
-                    userlogin.get("password") == req.queryMap().get("password").value()) {
-                return "login_accepted";    //needs to return a token
+            BasicDBObject userlogin = new BasicDBObject();
+            userlogin.put("username", req.queryMap().get("username").value());
+            userlogin.put("password", req.queryMap().get("password").value());
+            DBCursor cursor = colusers.find(userlogin);
+            if (cursor.hasNext()) {
+                return "login_accepted";    //needs to return token
             } else {
                 return "login_failed";
             }
+
         });
 
         // /addfriend?token=<badtoken>&friend=<freindsuserid>
