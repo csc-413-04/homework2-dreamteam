@@ -41,8 +41,12 @@ public class Main {
             BasicDBObject userlogin = new BasicDBObject();
             userlogin.put("username", req.queryMap().get("username").value());
             userlogin.put("password", req.queryMap().get("password").value());
+
             DBCursor cursor = colusers.find(userlogin);
             if (cursor.hasNext()) {
+                BasicDBObject myToken = new BasicDBObject();
+                myToken.put("Token", "jonothan's token");
+                myToken.put("Timestamp", System.currentTimeMillis());
                 return "login_accepted";    //needs to return token
             } else {
                 return "login_failed";
