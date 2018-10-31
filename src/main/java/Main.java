@@ -26,9 +26,11 @@ public class Main {
         ///newuser?username=<username>&password=<pass> HANDLED
         // AND /newuser?username=<anotheruser>&password=<pass>
         get("/newuser", (req, res) -> {
-            BasicDBObject newuser = new BasicDBObject();                            //build newuser to put into collection of users
+            BasicDBObject newuser = new BasicDBObject();
+            String[] friendsList = new String[0];
             newuser.put("username", req.queryMap().get("username").value());
             newuser.put("password", req.queryMap().get("password").value());
+            newuser.put("friends", friendsList);
             colusers.insert(newuser);                                               //put newuser into collection of users
             return "okay";
         });
@@ -36,10 +38,6 @@ public class Main {
         ///login?username=<username>&password=<wrongpassword>
         // AND /login?username=<username>&password=<pass>
         get("/login", (req, res) -> {
-            //req.queryMap().get("username").value();
-            //req.queryMap().get("password").value();
-            //build basicdbobject with username/password, look up in colusers, if match return login OK, if not login_failed
-            //colusers.find(); maybe
             BasicDBObject userlogin = new BasicDBObject();
             userlogin.put("username", req.queryMap().get("username").value());
             userlogin.put("password", req.queryMap().get("password").value());
@@ -56,6 +54,14 @@ public class Main {
         get("/addfriend", (req, res) -> {
             //req.queryMap().get("token").value();
             //req.queryMap().get("friend").value();
+
+//            BasicDBObject newFriend = new BasicDBObject();
+//            newFriend.put("username", req.queryMap().get("friend").value());
+//
+//            DBObject listItem = new BasicDBObject("friends", new BasicDBObject(newFriend));
+//            DBObject updateQuery = new BasicDBObject("$push", listItem);
+//            colusers.insert(updateQuery);
+
             return "failed_authentication";
         });
 
