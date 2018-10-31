@@ -1,9 +1,6 @@
 package main.java;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.MongoClient;
+import com.mongodb.*;
 
 import static spark.Spark.*;
 
@@ -43,7 +40,13 @@ public class Main {
             //req.queryMap().get("password").value();
             //build basicdbobject with username/password, look up in colusers, if match return login OK, if not login_failed
             //colusers.find(); maybe
-            return "login_failed";
+            DBObject userlogin = colusers.findOne();
+            if (userlogin.get("username") == req.queryMap().get("username").value() &&
+                    userlogin.get("password") == req.queryMap().get("password").value()) {
+                return "login_accepted";    //needs to return a token
+            } else {
+                return "login_failed";
+            }
         });
 
         // /addfriend?token=<badtoken>&friend=<freindsuserid>
