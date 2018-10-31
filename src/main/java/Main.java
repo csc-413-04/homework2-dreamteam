@@ -36,15 +36,15 @@ public class Main {
         ///login?username=<username>&password=<wrongpassword>
         // AND /login?username=<username>&password=<pass>
         get("/login", (req, res) -> {
-            //req.queryMap().get("username").value();
-            //req.queryMap().get("password").value();
-            //build basicdbobject with username/password, look up in colusers, if match return login OK, if not login_failed
-            //colusers.find(); maybe
             BasicDBObject userlogin = new BasicDBObject();
             userlogin.put("username", req.queryMap().get("username").value());
             userlogin.put("password", req.queryMap().get("password").value());
+
             DBCursor cursor = colusers.find(userlogin);
             if (cursor.hasNext()) {
+                BasicDBObject myToken = new BasicDBObject();
+                myToken.put("Token", "jonothan's token");
+                myToken.put("Timestamp", System.currentTimeMillis());
                 return "login_accepted";    //needs to return token
             } else {
                 return "login_failed";
