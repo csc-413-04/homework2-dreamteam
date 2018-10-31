@@ -44,23 +44,22 @@ public class Main {
 
             DBCursor cursor = colusers.find(userlogin);
             if (cursor.hasNext()) {
-                String jonothansToken = "";
+                String jonothansToken = "";     //needs to be generated
                 BasicDBObject myToken = new BasicDBObject();
-                myToken.put("Token", jonothansToken);
-                myToken.put("Timestamp", System.currentTimeMillis());
-                //myToken.put("username", req.queryMap().get("username").value());
+                myToken.put("token", jonothansToken);
+                myToken.put("timestamp", System.currentTimeMillis());
+                myToken.put("username", req.queryMap().get("username").value());
                 colauth.insert(myToken);
                 return jonothansToken;    //needs to return token
             } else {
                 return "login_failed";
             }
-
         });
 
         // /addfriend?token=<badtoken>&friend=<freindsuserid>
         get("/addfriend", (req, res) -> {
             BasicDBObject checkToken = new BasicDBObject();
-            checkToken.put("username", req.queryMap().get("token").value());
+            checkToken.put("token", req.queryMap().get("token").value());
 
             DBCursor cursor = colusers.find(checkToken);
             if (cursor.hasNext()) {
@@ -80,7 +79,16 @@ public class Main {
 
         // /friends?token=<token>
         get("friends", (req, res) -> {
-            //req.queryMap().get("token").value();
+            BasicDBObject checkToken = new BasicDBObject();
+            checkToken.put("token", req.queryMap().get("token").value());
+
+            DBCursor cursor = colauth.find(checkToken);
+            if (cursor.hasNext()) {
+                //access token.username, use username to lookup friendslist of username in colusers
+
+                return "friends";
+            }
+
             return " list of friends";
         });
 
