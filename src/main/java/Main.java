@@ -94,8 +94,7 @@ public class Main {
                 DBObject dbo = colauth.findOne();
                 String username = (String)dbo.get(req.queryMap().get("token").value());
                 dbo = colusers.findOne();
-                String friendslist = (String)dbo.get(username);
-                return friendslist;
+                return dbo.get(username);
             }
 
             return " list of friends";
