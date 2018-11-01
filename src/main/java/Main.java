@@ -23,8 +23,6 @@ public class Main {
         // calling get will make your app start listening for the GET path with the /hello endpoint
         get("/hello", (req, res) -> "Hello World");
 
-        ///newuser?username=<username>&password=<pass> HANDLED
-        // AND /newuser?username=<anotheruser>&password=<pass>
         get("/newuser", (req, res) -> {
             BasicDBObject newuser = new BasicDBObject();
             String[] friendsList = new String[0];
@@ -44,7 +42,7 @@ public class Main {
 
             DBCursor cursor = colusers.find(userlogin);
             if (cursor.hasNext()) {
-                String jonothansToken = "";     //needs to be generated
+                String jonothansToken = "tokentoken";     //needs to be generated
                 BasicDBObject myToken = new BasicDBObject();
                 myToken.put("token", jonothansToken);
                 myToken.put("timestamp", System.currentTimeMillis());
@@ -65,16 +63,16 @@ public class Main {
             if (cursor.hasNext()) {
 
                 BasicDBObject newDocument = new BasicDBObject();
-                newDocument.append("$set", new BasicDBObject().append("friends", 110));
-                //code for getting username from token
-                BasicDBObject searchQuery = new BasicDBObject().append("username", "someuser"); //needs username value from colauth
+                newDocument.append("$set", new BasicDBObject().append("friends", req.queryMap().get("friend").value()));
 
-                colusers.update(searchQuery, newDocument);
+                DBObject dbo = colauth.findOne();
+                String username = (String)dbo.get(req.queryMap().get("token").value());
+                BasicDBObject searchQuery = new BasicDBObject().append("username", username);
 
-
+                colusers.update(searchQuery, newDocument); //this doesn't add anything to the friends array
                 return "okay";
             } else {
-                return "login_failed";
+                return "failed_authentication";
             }
 //            BasicDBObject newFriend = new BasicDBObject();
 //            newFriend.put("username", req.queryMap().get("friend").value());
