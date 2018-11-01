@@ -91,8 +91,11 @@ public class Main {
             DBCursor cursor = colauth.find(checkToken);
             if (cursor.hasNext()) {
                 //access token.username, use username to lookup friendslist of username in colusers
-
-                return "friends";
+                DBObject dbo = colauth.findOne();
+                String username = (String)dbo.get(req.queryMap().get("token").value());
+                dbo = colusers.findOne();
+                String friendslist = (String)dbo.get(username);
+                return friendslist;
             }
 
             return " list of friends";
