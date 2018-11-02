@@ -2,6 +2,8 @@ package main.java;
 
 import com.mongodb.*;
 
+import java.security.SecureRandom;
+
 import static spark.Spark.*;
 
 public class Main {
@@ -41,14 +43,18 @@ public class Main {
             userlogin.put("password", req.queryMap().get("password").value());
 
             DBCursor cursor = colusers.find(userlogin);
+
             if (cursor.hasNext()) {
-                String jonothansToken = "tokentoken";     //needs to be generated
+                SecureRandom random = new SecureRandom();
+                int num = random.nextInt(100000);
+                String jonathansToken = String.format("%05d", num);
+               // String jonathansToken = "tokentoken";     //needs to be generated
                 BasicDBObject myToken = new BasicDBObject();
-                myToken.put("token", jonothansToken);
+                myToken.put("token", jonathansToken);
                 myToken.put("timestamp", System.currentTimeMillis());
                 myToken.put("username", req.queryMap().get("username").value());
                 colauth.insert(myToken);
-                return jonothansToken;    //needs to return token
+                return jonathansToken;    //needs to return token
             } else {
                 return "login_failed";
             }
