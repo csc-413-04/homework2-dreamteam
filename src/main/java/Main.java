@@ -61,16 +61,16 @@ public class Main {
 
             DBCursor cursor = colauth.find(checkToken);
             if (cursor.hasNext()) {
-                String currentToken = cursor.next().get("username").toString();
+                String currentUsername = cursor.next().get("username").toString();
 
                 BasicDBObject user = new BasicDBObject();
-                user.put("username", currentToken);
-                DBCursor cursor1 = colusers.find(user);
+                user.put("username", currentUsername);
 
+                DBCursor cursor1 = colusers.find(user);
                 if (cursor1.hasNext()) {
                     System.out.println("cursor1");
                     BasicDBObject newFriend = new BasicDBObject();
-                    newFriend.put("username", req.queryMap().get("friend"));
+                    newFriend.put("username", req.queryMap().get("friend").value());
                     BasicDBObject listItem = new BasicDBObject("friends", newFriend);
                     BasicDBObject updateQuery = new BasicDBObject("$push", listItem);
                     colusers.update(user, updateQuery);
