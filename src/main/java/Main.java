@@ -59,40 +59,26 @@ public class Main {
             BasicDBObject checkToken = new BasicDBObject();
             checkToken.put("token", req.queryMap().get("token").value());
 
-            BasicDBObject query = new BasicDBObject();
-            BasicDBObject field = new BasicDBObject();
-            field.put("username", 1);
-            DBCursor cursor = colauth.find(query,field);
+            DBCursor cursor = colauth.find(checkToken);
             if (cursor.hasNext()) {
-                System.out.println(cursor.next().get("username"));  //cursor.next().get("username") is the username we will use to query colusers
-                //everything below here does not work
+                String currentToken = cursor.next().get("username").toString();
 
-                BasicDBObject newDocument = new BasicDBObject();
-                newDocument.append("$set", new BasicDBObject().append("friends", req.queryMap().get("friend").value()));
+                BasicDBObject user = new BasicDBObject();
+                user.put("username", currentToken);
+                DBCursor cursor1 = colusers.find(user);
 
-                DBObject dbo = colauth.findOne();
-                String username = (String)dbo.get(req.queryMap().get("token").value());
-                System.out.println(username);
-                BasicDBObject searchQuery = new BasicDBObject().append("username", username);
-
-                colusers.update(searchQuery, newDocument); //this doesn't add anything to the friends array
-
-
-                DBObject listItem = new BasicDBObject("friends", new BasicDBObject("friend", req.queryMap().get("friend")));
-                DBObject updateQuery = new BasicDBObject("$push", listItem);
-
-                //colusers.update(findQuery, updateQuery);
+                if (cursor1.hasNext()) {
+                    System.out.println("cursor1");
+                    BasicDBObject newFriend = new BasicDBObject();
+                    newFriend.put("username", req.queryMap().get("friend"));
+                    BasicDBObject listItem = new BasicDBObject("friends", newFriend);
+                    BasicDBObject updateQuery = new BasicDBObject("$push", listItem);
+                    colusers.update(user, updateQuery);
+                }
                 return "okay";
             } else {
                 return "failed_authentication";
             }
-//            BasicDBObject newFriend = new BasicDBObject();
-//            newFriend.put("username", req.queryMap().get("friend").value());
-//
-//            DBObject listItem = new BasicDBObject("friends", new BasicDBObject(newFriend));
-//            DBObject updateQuery = new BasicDBObject("$push", listItem);
-//            colusers.insert(updateQuery);
-
         });
 
         // /friends?token=<token>
