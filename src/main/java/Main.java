@@ -29,7 +29,7 @@ public class Main {
             newuser.put("username", req.queryMap().get("username").value());
             newuser.put("password", req.queryMap().get("password").value());
             newuser.put("friends", friendsList);
-            colusers.insert(newuser);                                               //put newuser into collection of users
+            colusers.insert(newuser);
             return "okay";
         });
 
@@ -59,17 +59,29 @@ public class Main {
             BasicDBObject checkToken = new BasicDBObject();
             checkToken.put("token", req.queryMap().get("token").value());
 
-            DBCursor cursor = colauth.find(checkToken);
+            BasicDBObject query = new BasicDBObject();
+            BasicDBObject field = new BasicDBObject();
+            field.put("username", 1);
+            DBCursor cursor = colauth.find(query,field);
             if (cursor.hasNext()) {
+                System.out.println(cursor.next().get("username"));  //cursor.next().get("username") is the username we will use to query colusers
+                //everything below here does not work
 
                 BasicDBObject newDocument = new BasicDBObject();
                 newDocument.append("$set", new BasicDBObject().append("friends", req.queryMap().get("friend").value()));
 
                 DBObject dbo = colauth.findOne();
                 String username = (String)dbo.get(req.queryMap().get("token").value());
+                System.out.println(username);
                 BasicDBObject searchQuery = new BasicDBObject().append("username", username);
 
                 colusers.update(searchQuery, newDocument); //this doesn't add anything to the friends array
+
+
+                DBObject listItem = new BasicDBObject("friends", new BasicDBObject("friend", req.queryMap().get("friend")));
+                DBObject updateQuery = new BasicDBObject("$push", listItem);
+
+                //colusers.update(findQuery, updateQuery);
                 return "okay";
             } else {
                 return "failed_authentication";
